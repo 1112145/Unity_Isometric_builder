@@ -4,10 +4,6 @@ using System.Collections.Generic;
 
 public class Grid : MonoBehaviour {
 
-	public const string PATH_PREFABS_ODD = "Prefabs/OddTile";
-	public const string PATH_PREFABS_EVEN = "Prefabs/EvenTile";
-	public const string PATH_IMAGE_TILE = "Images/tile";
-
 	public bool isShowGrid = true;
 	public int nRow = 50;
 	public int nColumn = 25;
@@ -50,9 +46,9 @@ public class Grid : MonoBehaviour {
 
 	public void InitGrid()
 	{
-		Rect rect = (Resources.Load<Sprite>(PATH_IMAGE_TILE)).rect;
-		_unitHeight = (rect.width) * Mathf.Sqrt(0.5f) / 100;
-		_unitWidth = 2 * _unitHeight;
+		_unitWidth = Constants.UNIT_TILE_SIZE_WIDTH / Constants.PIXEL_PER_UNIT;
+		_unitHeight = Constants.UNIT_TILE_SIZE_HEIGHT / Constants.PIXEL_PER_UNIT;
+
 		_gridWidth = nColumn * _unitWidth;
 		_gridHeight = nRow * _unitHeight;
 		_centerAlign = new Vector3((-1)*_gridWidth/2,(-1)*_gridHeight/4);
@@ -64,15 +60,18 @@ public class Grid : MonoBehaviour {
 			for (int j = 0; j < nColumn; j++) {
 
 				GameObject tile;
+				tile = new GameObject("gridtile");
+				tile.transform.SetParent(this.transform);
+				SpriteRenderer renderer =  tile.AddComponent<SpriteRenderer>();
+				renderer.sprite = Resources.Load<Sprite>(Constants.PATH_IMAGE_TILE);
+
 				if(i % 2 == 0){
 					// even row
-					tile = (GameObject)Instantiate(Resources.Load<GameObject>(PATH_PREFABS_EVEN),this.transform);
 					// Set the right position
 					tile.transform.position = this.transform.position +  new Vector3(j * _unitWidth, i * _unitHeight /2) ;
 				}
 				else{
 					// odd row
-					tile = (GameObject)Instantiate(Resources.Load<GameObject>(PATH_PREFABS_ODD),this.transform);
 					// Set the right position
 					tile.transform.position = this.transform.position + new Vector3(j * _unitWidth + _unitWidth/2, i * _unitHeight /2);
 				}

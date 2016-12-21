@@ -205,11 +205,11 @@ public class Layer : MonoBehaviour
 	public void ShadowDebug (Vector3 pos)
 	{
 		if (shadow == null) {
-			shadow = (GameObject)Instantiate (Resources.Load<GameObject> ("Prefabs/EvenTile"), this.transform);
-			shadow.GetComponent<TileGrid> ().IsShow = true;
-			shadow.GetComponent<SpriteRenderer> ().sortingLayerName = IsoLayerManager.instance.CurrentLayerName;
+			shadow = new GameObject("gridtile");
+			shadow.transform.SetParent(this.transform);
+			SpriteRenderer renderer =  shadow.AddComponent<SpriteRenderer>();
+			renderer.sprite = Resources.Load<Sprite>(Constants.PATH_IMAGE_TILE);
 		}
-
 		shadow.transform.position = ToIsoPosition(pos);
 
 		string hashKey = shadow.transform.position.x + "," + shadow.transform.position.y;
@@ -225,10 +225,8 @@ public class Layer : MonoBehaviour
 
 	void GetUnitSize ()
 	{
-		Sprite unitSprite = Resources.Load<Sprite> (PATH_TILE_UNIT_SPRITE);
-		Rect rect = unitSprite.rect;
-		_unitHeight = (rect.width) * Mathf.Sqrt (0.5f) / unitSprite.pixelsPerUnit;
-		_unitWidth = 2 * _unitHeight;
+		_unitWidth = Constants.UNIT_TILE_SIZE_WIDTH / Constants.PIXEL_PER_UNIT;
+		_unitHeight = Constants.UNIT_TILE_SIZE_HEIGHT / Constants.PIXEL_PER_UNIT;
 	}
 
 	public void SetVisible(bool show)
