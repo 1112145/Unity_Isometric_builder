@@ -8,7 +8,7 @@ using System.IO;
 
 public class ExportFileManager : MonoBehaviour {
 
-	public static IsoMetricRootModel rootModel = new IsoMetricRootModel();
+	public static IsoMetricRootModel OutputRootModel = new IsoMetricRootModel();
 	// Use this for initialization
 	void Start () {
 	
@@ -25,8 +25,8 @@ public class ExportFileManager : MonoBehaviour {
 		saveDialog.Filter = "JSON Files |*.json";
 		if(saveDialog.ShowDialog() == DialogResult.OK)
 		{
-			rootModel.ConvertAllLayer();
-			string jsonContent = JsonUtility.ToJson(rootModel);
+			OutputRootModel.ConvertAllLayer();
+			string jsonContent = JsonUtility.ToJson(OutputRootModel);
 			File.WriteAllText(saveDialog.FileName,jsonContent);
 			CameraTool._isDragging = false;
 		}

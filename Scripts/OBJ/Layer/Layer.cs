@@ -28,7 +28,7 @@ public class Layer : MonoBehaviour
 	#endregion 
 
 	#region PRIVATE FIELD
-	private int MAX_TILE_PER_LAYER = 512;
+	private int MAX_TILE_PER_LAYER = 2048;
 	private GameObject shadow;
 	private float _unitHeight;
 	private float _unitWidth;
@@ -44,9 +44,9 @@ public class Layer : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (layerID != IsoLayerManager.instance.CurrentLayerIndex 
-			&& IsoLayerManager.instance!= null)
-			return;
+		if(IsoLayerManager.instance == null) return;
+		if(layerID != IsoLayerManager.instance.CurrentLayerIndex) return;
+			
 		
 		if (currentAction == MouseAction.cellhold) {
 			// Change the mouse cursor into tile image.
@@ -126,7 +126,7 @@ public class Layer : MonoBehaviour
 		currentObj.GetComponent<IsoObject> ().state = IsoObject.State.isHolding;
 	}
 
-	public IsoObject NewObject ()
+	public void NewObject ()
 	{
 		IsoObject obj = null;
 		currentAction = MouseAction.cellhold;
@@ -134,6 +134,7 @@ public class Layer : MonoBehaviour
 			currentObj = (GameObject)Instantiate (Resources.Load<GameObject> (ImportItemManager.currentPrefabs), this.transform);
 			currentObj.transform.position = new Vector3 (-1000f, -1000f, -1000f);
 			obj = currentObj.GetComponent<IsoObject> ();
+			obj.FilePath = IsoObjectFactory.instance.FilePath;
 			obj.state = IsoObject.State.isHolding;
 			if(ImportItemManager.loadedImage != null)
 			{
@@ -141,7 +142,6 @@ public class Layer : MonoBehaviour
 				currentObj.GetComponent<SpriteRenderer> ().sprite = ImportItemManager.loadedImage;
 			}
 		}
-		return obj;
 	}
 
 	private void SnapObject ()
@@ -173,6 +173,12 @@ public class Layer : MonoBehaviour
 	{
 		string hashKey = pos.x + "," + pos.y;
 		if(positionData[hashKey] == null) positionData.Add(hashKey,currentObj);
+	}
+
+	public void AddPositionData(Vector3 pos, GameObject obj)
+	{
+		string hashKey = pos.x + "," + pos.y;
+		if(positionData[hashKey] == null) positionData.Add(hashKey,obj);
 	}
 
 	public void RemoveDataAtPosition(Vector3 pos)

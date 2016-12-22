@@ -3,10 +3,13 @@ using System.Collections;
 
 public class IsoObjectFactory : MonoBehaviour {
 
-
 	public string FilePath;
+	public static IsoObjectFactory instance;
 
-
+	void Awake()
+	{
+		instance = this;
+	}
 
 	// Use this for initialization
 	void Start () {

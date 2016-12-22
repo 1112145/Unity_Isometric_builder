@@ -28,6 +28,7 @@ public class IsoObjectModel {
 public class IsoLayerModel 
 {
 	public int layerId;
+	public string layerName;
 	public List<IsoObjectModel> objects;
 	public bool visible;
 
@@ -36,6 +37,7 @@ public class IsoLayerModel
 	{
 		IsoLayerModel layermodel = new IsoLayerModel();
 		layermodel.layerId = layer.layerID;
+		layermodel.layerName = layer.gameObject.name;
 		layermodel.objects = new List<IsoObjectModel>();
 		layermodel.visible = (layer.gameObject.activeSelf)? true: false; 
 		for (int i = 0; i < layer.transform.childCount; i++) {
@@ -56,8 +58,8 @@ public class IsoMetricRootModel
 
 	public void ConvertAllLayer()
 	{
-		for (int i = 0; i < IsoLayerManager.layers.Count; i++) {
-			GameObject objLayer = GameObject.Find(IsoLayerManager.PREFIX_LAYER + IsoLayerManager.layers[i]);	
+		for (int i = 0; i < IsoLayerManager.layernames.Count; i++) {
+			GameObject objLayer = IsoLayerManager.instance.generator[i].gameObject;	
 			Layer isolayer = objLayer.GetComponent<Layer>();
 			IsoLayerModel model = new IsoLayerModel();
 			model = model.FromLayer(isolayer);
