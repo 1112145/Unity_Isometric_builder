@@ -8,9 +8,9 @@ public class CameraTool : Tool
 	public static CameraTool instance;
 
 	#region private field
-	private int[] _cameraSizes = new int[]{ 5, 4, 3, 2, 1 };
+	private int[] _cameraSizes = new int[]{ 25 ,20, 16, 12, 8, 4 };
 	private int _zoom = 2;
-	private float _panSpeed = -2f;
+	private float _panSpeed = -16f;
 	private Vector3 _mouseOrigin;
 	private Vector3 _defaultPos;
 	private int _defaultZoomLevel = 2;

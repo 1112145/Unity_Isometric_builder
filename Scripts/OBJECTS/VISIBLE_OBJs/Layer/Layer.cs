@@ -129,15 +129,22 @@ public class Layer : MonoBehaviour
 		IsoObject obj = null;
 		currentAction = MouseAction.cellhold;
 		if (currentObj == null) {
-			currentObj = (GameObject)Instantiate (Resources.Load<GameObject> (ImportItemManager.currentPrefabs), this.transform);
+//			currentObj = (GameObject)Instantiate (Resources.Load<GameObject> (ImportItemManager.currentPrefabs), this.transform);
+			currentObj = new GameObject ("obj");
+			currentObj.transform.SetParent(this.transform);
+
+			currentObj.AddComponent<SpriteRenderer> ();
+			obj = currentObj.AddComponent<IsoObject> ();
+
 			currentObj.transform.position = new Vector3 (-1000f, -1000f, -1000f);
 			obj = currentObj.GetComponent<IsoObject> ();
 			obj.FilePath = IsoObjectFactory.instance.FilePath;
 			obj.state = IsoObject.State.isHolding;
 			if(ImportItemManager.loadedImage != null)
 			{
-				// Change prefabs image. In case of image is loaded from outside project.
+				// Change image. In case of image is loaded from outside project.
 				currentObj.GetComponent<SpriteRenderer> ().sprite = ImportItemManager.loadedImage;
+				currentObj.AddComponent<PolygonCollider2D> ();
 			}
 		}
 	}

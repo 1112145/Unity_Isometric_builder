@@ -13,7 +13,7 @@ public class IsoLayerManager : MonoBehaviour
 	public Text txtCurrenLayer;
 
 	[HideInInspector]
-	public int CurrentLayerIndex = 1;
+	public int CurrentLayerIndex = 0;
 
 	[HideInInspector]
 	public string CurrentLayerName;
@@ -77,7 +77,6 @@ public class IsoLayerManager : MonoBehaviour
 		Layer layer = CreateLayerContainer (layername,layerId);
 
 		// Create a button to show layer menu.
-
 		GameObject gameObject = CreateNewButtonOnLayerMenu (layername);
 
 		// set event listener for toggle to show/ hide this layer.
@@ -89,6 +88,7 @@ public class IsoLayerManager : MonoBehaviour
 		// Create a dialog to contain item type of this layer.
 		GameObject newDialog = CreateAItemDialog ();
 
+
 		SetOnClickNewButton (layer, gameObject, newDialog);
 	}
 
@@ -96,8 +96,8 @@ public class IsoLayerManager : MonoBehaviour
 	public static GameObject CreateAItemDialog ()
 	{
 		GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate (Resources.Load<GameObject> ("Prefabs/Dialog_Object (1)"), instance.groupDialog.transform);
-		gameObject.transform.localScale = new Vector3 (1f, 1f, 1f);
-		gameObject.transform.localPosition = new Vector3 (gameObject.transform.localPosition.x, gameObject.transform.localPosition.y, 0f);
+		gameObject.transform.localScale = Vector3.one;
+		gameObject.transform.localPosition = Vector3.zero;
 		Button component = gameObject.transform.GetChild (0).FindChild ("AddTile").GetComponent<Button> ();
 		component.onClick.AddListener (delegate {
 			ImportItemManager.instance.ImportNewItem ();
@@ -132,15 +132,12 @@ public class IsoLayerManager : MonoBehaviour
 		Button component = newButton.GetComponent<Button> ();
 		component.onClick.AddListener (delegate {
 			newDialog.GetComponent<Dialog> ().ShowDiaLog (true);
-			Debug.Log("aaa");
 		});
 		component.onClick.AddListener (delegate {
 			IsoLayerManager.instance.SelectLayer (script.layerID);
-			Debug.Log("bbb");
 		});
 		component.onClick.AddListener (delegate {
 			ImportItemManager.currentButtonContainer = newDialog.transform.GetChild (0).GetChild (0).gameObject;
-			Debug.Log("ccc");
 		});
 	}
 

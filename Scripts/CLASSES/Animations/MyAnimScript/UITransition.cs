@@ -281,14 +281,4 @@ public class UITransition: MonoBehaviour {
 
 
 
-
-//	IEnumerator TypeText (string message) {
-//		foreach (char letter in message.ToCharArray()) {
-//			//guiText.text += letter;
-//			//if (sound)
-//				//audio.PlayOneShot (sound);
-//			yield return 0;
-//			yield return new WaitForSeconds (0.2f);
-//		}      
-//	}
 }

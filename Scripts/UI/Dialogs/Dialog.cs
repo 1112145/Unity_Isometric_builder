@@ -25,7 +25,7 @@ public class Dialog : MonoBehaviour {
 		{
 			foreground.SetActive(true);
 			DialogController.instance.HideAllDialogExclude(this.gameObject);
-			contentView.SetActive(true);
+			UITransition.PopIn(contentView.transform);
 		}
 		else
 		{
