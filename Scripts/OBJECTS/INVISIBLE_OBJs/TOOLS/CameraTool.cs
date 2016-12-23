@@ -28,7 +28,7 @@ public class CameraTool : Tool
 
 		ToolManager.tools.Add(this);
 		ToolManager.SetDefaultTool(this); // Set camera as default tool
-		Debug.Log("Add " + ToolName + " Success!");
+//		Debug.Log("Add " + ToolName + " Success!");
 	}
 	
 	// Update is called once per frame
@@ -73,7 +73,6 @@ public class CameraTool : Tool
 	public void ActiveCameraTool(bool activeFlag)
 	{
 		active = activeFlag;
-		Debug.Log("abc");
 	}
 	#endregion
 

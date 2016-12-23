@@ -62,7 +62,9 @@ public class Layer : MonoBehaviour
 	#region SORTING ORDER FUNCTION
 	public void SortOrderByYAxis(GameObject obj)
 	{
-		obj.GetComponent<SpriteRenderer> ().sortingOrder = Mathf.RoundToInt (obj.transform.position.y * 100f) * -1 + layerID * MAX_TILE_PER_LAYER;
+		float yAxis = obj.transform.position.y;
+		int computedSorting = Mathf.RoundToInt (yAxis * 100f) * (-1) + layerID * MAX_TILE_PER_LAYER;
+		obj.GetComponent<SpriteRenderer> ().sortingOrder = computedSorting;
 	}
 	#endregion
 
@@ -78,15 +80,11 @@ public class Layer : MonoBehaviour
 	void OnBuild ()
 	{
 		if (startBuild) {
-			// Focus on this layer.
 			IsoLayerManager.instance.FocusCurrentLayer();
 			if (canSnap) {
-				//Snap it to grid!
 				SnapObject ();
-				// Clear cell. New Cell;
 				currentObj = null;
 				NewObject ();
-
 			}
 		}
 	}
@@ -215,8 +213,10 @@ public class Layer : MonoBehaviour
 			shadow.transform.SetParent(this.transform);
 			SpriteRenderer renderer =  shadow.AddComponent<SpriteRenderer>();
 			renderer.sprite = Resources.Load<Sprite>(Constants.PATH_IMAGE_TILE);
+
 		}
 		shadow.transform.position = ToIsoPosition(pos);
+		SortOrderByYAxis(shadow);
 
 		string hashKey = shadow.transform.position.x + "," + shadow.transform.position.y;
 		if (positionData [hashKey] == null) {

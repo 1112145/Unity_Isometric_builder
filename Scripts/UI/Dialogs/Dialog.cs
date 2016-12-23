@@ -7,8 +7,6 @@ public class Dialog : MonoBehaviour {
 	public GameObject contentView;
 	public bool IsActive = false;
 
-
-
 	// Use this for initialization
 	void Start () {
 	

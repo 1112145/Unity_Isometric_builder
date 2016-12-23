@@ -69,8 +69,8 @@ public class ImportItemManager : MonoBehaviour {
 		Sprite sprite = Sprite.Create(texture, new Rect(0,0,texture.width,texture.height), new Vector2(0.5f,0f));
 		imgItem.sprite = sprite;
 		item.transform.SetParent(currentButtonContainer.transform,false);
-		item.transform.localScale = new Vector3(1,1,1);
-		item.transform.localPosition = new Vector3(0,0,0);
+		item.transform.localScale = Vector3.one;
+		item.transform.localPosition = Vector3.zero;
 
 		IsoObjectFactory factory = item.AddComponent<IsoObjectFactory>();
 		factory.FilePath = path;
@@ -79,7 +79,6 @@ public class ImportItemManager : MonoBehaviour {
 			loadedImage = btnItem.image.sprite;
 			IsoObjectFactory.instance = factory;
 			IsoLayerManager.currentLayer.NewObject();
-
 		});
 	}
 }

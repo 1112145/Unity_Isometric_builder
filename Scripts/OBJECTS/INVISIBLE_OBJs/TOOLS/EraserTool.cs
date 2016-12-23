@@ -32,7 +32,7 @@ public class EraserTool : Tool
 	{
 		ToolName = ERASER_NAME;
 		ToolManager.tools.Add (this);
-		Debug.Log ("Add " + ToolName + " Success!");
+//		Debug.Log ("Add " + ToolName + " Success!");
 	}
 	
 	// Update is called once per frame

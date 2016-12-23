@@ -28,7 +28,6 @@ public class DialogController : MonoBehaviour {
 			{
 				this.transform.GetChild(i).gameObject.SetActive(false);
 			}
-
 		}
 	}
 

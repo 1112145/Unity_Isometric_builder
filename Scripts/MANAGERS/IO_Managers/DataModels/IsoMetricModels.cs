@@ -2,51 +2,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 [Serializable]
-public class IsoObjectModel {
+public class IsoObjectModel
+{
 	public string ImgFileName;
 	public string ImgFilePath;
+	public string ImgFolderPath;
+
 	public int SortingOrder;
 	public Vector3 position;
 
-	public IsoObjectModel FromIsoObject(IsoObject obj)
+	// Convert from iso object to iso model.
+
+	public IsoObjectModel FromIsoObject (IsoObject obj)
 	{
-		IsoObjectModel model = new IsoObjectModel();
-		// Convert from obj to model.
+		IsoObjectModel model = new IsoObjectModel ();
 
 		model.position = obj.gameObject.transform.position;
-		model.SortingOrder = obj.GetComponent<SpriteRenderer>().sortingOrder;
+		model.SortingOrder = obj.GetComponent<SpriteRenderer> ().sortingOrder;
 		model.ImgFilePath = obj.FilePath;
-		// Then return model.
+		model.ImgFileName = Path.GetFileName (obj.FilePath);
+		model.ImgFolderPath = Path.GetDirectoryName (obj.FilePath);
 		return model;
 	}
 }
 
-
 [Serializable]
-public class IsoLayerModel 
+public class IsoLayerModel
 {
 	public int layerId;
 	public string layerName;
-	public List<IsoObjectModel> objects;
 	public bool visible;
+	public List<IsoObjectModel> objects = new List<IsoObjectModel>();
 
 
-	public IsoLayerModel FromLayer(Layer layer)
+	public IsoLayerModel FromLayer (Layer layer)
 	{
-		IsoLayerModel layermodel = new IsoLayerModel();
-		layermodel.layerId = layer.layerID;
-		layermodel.layerName = layer.gameObject.name;
-		layermodel.objects = new List<IsoObjectModel>();
-		layermodel.visible = (layer.gameObject.activeSelf)? true: false; 
+		IsoLayerModel model = new IsoLayerModel ();
+		model.layerId = layer.layerID;
+		model.layerName = layer.gameObject.name;
+		model.visible = (layer.gameObject.activeSelf) ? true : false; 
+
 		for (int i = 0; i < layer.transform.childCount; i++) {
-			IsoObject obj = layer.transform.GetChild(i).GetComponent<IsoObject>();
-			IsoObjectModel objModel = new IsoObjectModel();
-			objModel = objModel.FromIsoObject(obj);
-			layermodel.objects.Add(objModel);
+			IsoObject obj = layer.transform.GetChild (i).GetComponent<IsoObject> ();
+			IsoObjectModel objModel = new IsoObjectModel ();
+			objModel = objModel.FromIsoObject (obj);
+			model.objects.Add (objModel);
 		}
-		return layermodel;
+
+		return model;
 	}
 
 }
@@ -54,16 +60,16 @@ public class IsoLayerModel
 [Serializable]
 public class IsoMetricRootModel
 {
-	public List<IsoLayerModel> layers = new List<IsoLayerModel>();
+	public List<IsoLayerModel> layers = new List<IsoLayerModel> ();
 
-	public void ConvertAllLayer()
+	public void ConvertAllLayer ()
 	{
 		for (int i = 0; i < IsoLayerManager.layernames.Count; i++) {
-			GameObject objLayer = IsoLayerManager.instance.generator[i].gameObject;	
-			Layer isolayer = objLayer.GetComponent<Layer>();
-			IsoLayerModel model = new IsoLayerModel();
-			model = model.FromLayer(isolayer);
-			layers.Add(model);
+			GameObject objLayer = IsoLayerManager.instance.layers [i].gameObject;	
+			Layer isolayer = objLayer.GetComponent<Layer> ();
+			IsoLayerModel model = new IsoLayerModel ();
+			model = model.FromLayer (isolayer);
+			layers.Add (model);
 		}
 	}
 }

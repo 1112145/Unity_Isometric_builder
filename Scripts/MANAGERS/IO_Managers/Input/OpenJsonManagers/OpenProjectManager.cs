@@ -8,11 +8,7 @@ using UnityEngine.UI;
 
 public class OpenProjectManager : MonoBehaviour
 {
-
 	public static IsoMetricRootModel InputRootModel;
-
-	public static int version = 0;
-
 	public static List<string> loadedUrls = new List<string>();
 	public static List<Sprite> loadedSprites = new List<Sprite>();
 	// Use this for initialization
