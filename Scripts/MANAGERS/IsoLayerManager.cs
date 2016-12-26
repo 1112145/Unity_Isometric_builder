@@ -4,12 +4,16 @@ using UnityEngine.UI;
 
 public class IsoLayerManager : MonoBehaviour
 {
+	#region CONSTANT
 	public const string PATH_PREFAB_DIALOG = "Prefabs/Dialog_Object (1)";
 	public const string PATH_PREFAB_BUTTON = "Prefabs/btn_demo_object_1";
 	public const string STR_ADDTILE_BUTTON = "AddTile";
 	public const string STR_SELECTING_LAYER = "Selecting Layer: ";
-	public const string PREFIX_LAYER = "LAYER_";
+	public const string PREFIX_LAYER = "layer_";
+	public const string STR_TOGGLE = "Toggle";
+	#endregion
 
+	#region PUBLIC Field
 	public Text txtCurrenLayer;
 
 	[HideInInspector]
@@ -29,7 +33,9 @@ public class IsoLayerManager : MonoBehaviour
 
 	[HideInInspector]
 	public List<Layer> layers = new List<Layer> ();
+	#endregion
 
+	#region Private field
 	private void Awake ()
 	{
 		IsoLayerManager.instance = this;
@@ -46,6 +52,8 @@ public class IsoLayerManager : MonoBehaviour
 			this.txtCurrenLayer.text = STR_SELECTING_LAYER + this.CurrentLayerName;
 		}
 	}
+
+	#endregion
 
 	#region SELECT LAYER
 	public void SelectLayer (int layerIndex)
@@ -69,36 +77,37 @@ public class IsoLayerManager : MonoBehaviour
 
 	public void AddNewLayer ()
 	{
-		IsoLayerManager.layernames.Add ("layer_" + IsoLayerManager.layernames.Count);
+		IsoLayerManager.layernames.Add (PREFIX_LAYER + IsoLayerManager.layernames.Count);
 
 		// Create layer to contain iso objects.
-		string layername = IsoLayerManager.layernames [IsoLayerManager.layernames.Count -1];
-		int layerId = IsoLayerManager.layernames.Count -1;
-		Layer layer = CreateLayerContainer (layername,layerId);
+		int lastIndex = IsoLayerManager.layernames.Count -1;
+		string layername = IsoLayerManager.layernames [lastIndex];
+		int layerId = lastIndex;
+		Layer layer = CreateLayer (layername,layerId);
 
 		// Create a button to show layer menu.
-		GameObject gameObject = CreateNewButtonOnLayerMenu (layername);
+		GameObject objButtonLayer = CreateNewButtonOnLayerMenu (layername);
 
 		// set event listener for toggle to show/ hide this layer.
-		Toggle toggle = gameObject.transform.FindChild ("Toggle").GetComponent<Toggle> ();
-		toggle.onValueChanged.AddListener (delegate(bool on) {
+		Toggle tglLayerVisible = objButtonLayer.transform.FindChild (STR_TOGGLE).GetComponent<Toggle> ();
+		tglLayerVisible.onValueChanged.AddListener (delegate(bool on) {
 			layer.SetVisible (on);
 		});
 
-		// Create a dialog to contain item type of this layer.
-		GameObject newDialog = CreateAItemDialog ();
+		// Create a dialog (layer menu) to contain item type of this layer.
+		GameObject menuItem = CreateLayerMenuItem ();
 
 
-		SetOnClickNewButton (layer, gameObject, newDialog);
+		SetOnClickNewButton (layer, objButtonLayer, menuItem);
 	}
 
 
-	public static GameObject CreateAItemDialog ()
+	public static GameObject CreateLayerMenuItem ()
 	{
-		GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate (Resources.Load<GameObject> ("Prefabs/Dialog_Object (1)"), instance.groupDialog.transform);
+		GameObject gameObject = (GameObject)Instantiate (Resources.Load<GameObject> (PATH_PREFAB_DIALOG), instance.groupDialog.transform);
 		gameObject.transform.localScale = Vector3.one;
 		gameObject.transform.localPosition = Vector3.zero;
-		Button component = gameObject.transform.GetChild (0).FindChild ("AddTile").GetComponent<Button> ();
+		Button component = gameObject.transform.GetChild (0).FindChild (STR_ADDTILE_BUTTON).GetComponent<Button> ();
 		component.onClick.AddListener (delegate {
 			ImportItemManager.instance.ImportNewItem ();
 		});
@@ -106,7 +115,7 @@ public class IsoLayerManager : MonoBehaviour
 		return gameObject;
 	}
 
-	public static Layer CreateLayerContainer (string layername, int layerId)
+	public static Layer CreateLayer (string layername, int layerId)
 	{
 		GameObject gameObject = new GameObject (layername);
 		Layer layer = gameObject.AddComponent<Layer> ();
@@ -118,8 +127,8 @@ public class IsoLayerManager : MonoBehaviour
 
 	public static GameObject CreateNewButtonOnLayerMenu (string buttonName)
 	{
-		GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate (Resources.Load<GameObject> ("Prefabs/btn_demo_object_1"), instance.buttonLayerContainer.transform);
-		gameObject.transform.localScale = new Vector3 (1f, 1f, 1f);
+		GameObject gameObject = (GameObject)Instantiate (Resources.Load<GameObject> (PATH_PREFAB_BUTTON), instance.buttonLayerContainer.transform);
+		gameObject.transform.localScale = Vector3.one;
 		gameObject.transform.localPosition = new Vector3 (gameObject.transform.localPosition.x, gameObject.transform.localPosition.y, 0f);
 		Text component = gameObject.transform.GetChild (0).GetComponent<Text> ();
 		component.text = buttonName;

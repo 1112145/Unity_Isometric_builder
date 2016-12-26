@@ -20,7 +20,6 @@ public class MoveTool : Tool {
 	void Start () {
 		ToolName = NAME_MOVE_TOOL;
 		ToolManager.tools.Add(this);
-//		Debug.Log("Add " + ToolName + " Success!");
 	}
 	
 	// Update is called once per frame

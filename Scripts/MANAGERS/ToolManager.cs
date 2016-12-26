@@ -10,7 +10,6 @@ public class ToolManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-//		Debug.Log("Tool Manager Ready!");
 	}
 	
 	// Update is called once per frame

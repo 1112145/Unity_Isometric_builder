@@ -6,11 +6,13 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 
+
+// TODO: Load item menu.
 public class OpenProjectManager : MonoBehaviour
 {
 	public static IsoMetricRootModel InputRootModel;
-	public static List<string> loadedUrls = new List<string>();
-	public static List<Sprite> loadedSprites = new List<Sprite>();
+	public static List<string> loadedUrls = new List<string> ();
+	public static List<Sprite> loadedSprites = new List<Sprite> ();
 	// Use this for initialization
 	void Start ()
 	{
@@ -48,7 +50,7 @@ public class OpenProjectManager : MonoBehaviour
 	public void RenderLayer (IsoLayerModel model)
 	{
 		IsoLayerManager.layernames.Add (model.layerName);
-		Layer layer = IsoLayerManager.CreateLayerContainer (model.layerName, model.layerId);
+		Layer layer = IsoLayerManager.CreateLayer (model.layerName, model.layerId);
 		layer.gameObject.SetActive (model.visible);
 
 		GameObject buttonGameObject = IsoLayerManager.CreateNewButtonOnLayerMenu (model.layerName);
@@ -59,12 +61,39 @@ public class OpenProjectManager : MonoBehaviour
 
 		toggle.isOn = model.visible;
 
-		GameObject dialog = IsoLayerManager.CreateAItemDialog ();
+		GameObject dialog = IsoLayerManager.CreateLayerMenuItem ();
 
 		IsoLayerManager.SetOnClickNewButton (layer, buttonGameObject, dialog);
-
+		RenderMenuItem (model, dialog);
 		for (int i = 0; i < model.objects.Count; i++) {
 			RenderObject (model.objects [i], layer);
+		}
+
+
+	}
+
+	void RenderMenuItem (IsoLayerModel model, GameObject dialog)
+	{
+		for (int i = 0; i < model.FactoryModel.Count; i++) {
+			string url = model.FactoryModel [i].filePath;
+			StartCoroutine (LoadItemMenuImage (url, result => {
+				GameObject item = new GameObject ("item");
+				Image imgItem = item.AddComponent<Image> ();
+				UnityEngine.UI.Button btnItem = item.AddComponent<UnityEngine.UI.Button> ();
+				imgItem.sprite = result;
+				item.transform.SetParent (dialog.transform.GetChild (0).GetChild (0), false);
+				item.transform.localScale = Vector3.one;
+				item.transform.localPosition = Vector3.zero;
+				IsoObjectFactory factory = item.AddComponent<IsoObjectFactory> ();
+
+				factory.FilePath = url;
+				IsoLayerManager.currentLayer.isoFactories.Add (factory);
+				btnItem.onClick.AddListener (() => {
+					ImportItemManager.loadedImage = btnItem.image.sprite;
+					IsoObjectFactory.instance = factory;
+					IsoLayerManager.currentLayer.NewObject ();
+				});
+			}));
 		}
 	}
 
@@ -72,6 +101,7 @@ public class OpenProjectManager : MonoBehaviour
 	{
 		GameObject obj = new GameObject ("obj");
 		obj.transform.position = objModel.position;
+		obj.transform.rotation = objModel.rotation;
 		obj.transform.SetParent (layer.gameObject.transform);
 
 		SpriteRenderer renderer = obj.AddComponent<SpriteRenderer> ();
@@ -88,34 +118,31 @@ public class OpenProjectManager : MonoBehaviour
 		}));
 	}
 
-//	IEnumerator LoadItemImage (string url, Action<Sprite> callback)
-//	{
-//		Texture2D texture = null;
-//		WWW www = new WWW("file:///" + url);
-//		yield return www;
-//		texture = www.texture;
-//
-//		Sprite sprite = Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0f));
-//		callback (sprite);
-//	}
+	IEnumerator LoadItemMenuImage (string url, Action<Sprite> callback)
+	{
+		Texture2D texture = null;
+		WWW www = new WWW ("file:///" + url);
+		yield return www;
+		texture = www.texture;
+
+		Sprite sprite = Ultils.SetIsoPivot(texture);
+		callback (sprite);
+	}
 
 	IEnumerator LoadItemImage (string url, Action<Sprite> callback)
 	{
 		Texture2D texture = null;
-		if(!loadedUrls.Contains(url)){
-			WWW www = new WWW("file:///" + url);
+		if (!loadedUrls.Contains (url)) {
+			WWW www = new WWW ("file:///" + url);
 			yield return www;
 			texture = www.texture;
-			Sprite sprite = Sprite.Create (texture, new Rect (0, 0, texture.width, texture.height), new Vector2 (0.5f, 0f));
-
-			loadedUrls.Add(url);
-			loadedSprites.Add(sprite);
+			Sprite sprite = Ultils.SetIsoPivot(texture);
+			loadedUrls.Add (url);
+			loadedSprites.Add (sprite);
 			callback (sprite);
-		}
-		else
-		{
+		} else {
 			yield return null;
-			callback(loadedSprites[loadedUrls.IndexOf(url)]);
+			callback (loadedSprites [loadedUrls.IndexOf (url)]);
 		}
 	}
 }

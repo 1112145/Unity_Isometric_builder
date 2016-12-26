@@ -13,6 +13,7 @@ public class IsoObjectModel
 
 	public int SortingOrder;
 	public Vector3 position;
+	public Quaternion rotation;
 
 	// Convert from iso object to iso model.
 
@@ -21,6 +22,7 @@ public class IsoObjectModel
 		IsoObjectModel model = new IsoObjectModel ();
 
 		model.position = obj.gameObject.transform.position;
+		model.rotation = obj.gameObject.transform.rotation;
 		model.SortingOrder = obj.GetComponent<SpriteRenderer> ().sortingOrder;
 		model.ImgFilePath = obj.FilePath;
 		model.ImgFileName = Path.GetFileName (obj.FilePath);
@@ -36,7 +38,7 @@ public class IsoLayerModel
 	public string layerName;
 	public bool visible;
 	public List<IsoObjectModel> objects = new List<IsoObjectModel>();
-
+	public List<IsoFactoryModel> FactoryModel = new List<IsoFactoryModel>();
 
 	public IsoLayerModel FromLayer (Layer layer)
 	{
@@ -45,16 +47,36 @@ public class IsoLayerModel
 		model.layerName = layer.gameObject.name;
 		model.visible = (layer.gameObject.activeSelf) ? true : false; 
 
+		for (int i = 0; i < layer.isoFactories.Count; i++) {
+			model.FactoryModel.Add(new IsoFactoryModel(layer.isoFactories[i]));
+		}
 		for (int i = 0; i < layer.transform.childCount; i++) {
 			IsoObject obj = layer.transform.GetChild (i).GetComponent<IsoObject> ();
-			IsoObjectModel objModel = new IsoObjectModel ();
-			objModel = objModel.FromIsoObject (obj);
-			model.objects.Add (objModel);
+			if(obj != null){
+				IsoObjectModel objModel = new IsoObjectModel ();
+				objModel = objModel.FromIsoObject (obj);
+				model.objects.Add (objModel);
+			}
 		}
 
 		return model;
 	}
 
+
+
+}
+
+[Serializable]
+public class IsoFactoryModel
+{
+	public string filePath;
+
+	public IsoFactoryModel(){}
+
+	public IsoFactoryModel(IsoObjectFactory factory)
+	{
+		this.filePath = factory.FilePath;
+	}
 }
 
 [Serializable]

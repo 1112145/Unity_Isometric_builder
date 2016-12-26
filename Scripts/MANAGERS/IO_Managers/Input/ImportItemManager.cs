@@ -15,6 +15,8 @@ public class ImportItemManager : MonoBehaviour {
 	public static GameObject currentButtonContainer;
 	public static ImportItemManager instance;
 	private string path;
+	private Texture2D texture;
+
 	// Use this for initialization
 	void Awake () {
 		prefabsDefaultPath.Add("Prefabs/floor");
@@ -56,29 +58,34 @@ public class ImportItemManager : MonoBehaviour {
 
 	IEnumerator LoadImage(string url)
 	{
-		Texture2D texture;
 		texture = new Texture2D(4, 4, TextureFormat.DXT1, false);
 		WWW www = new WWW(url);
 		yield return www;
 		www.LoadImageIntoTexture(texture);
 		// Show PNG Images.
-		GameObject item = new GameObject("item");
-		Image imgItem = item.AddComponent<Image>();
-		UnityEngine.UI.Button btnItem = item.AddComponent<UnityEngine.UI.Button>();
+		Debug.Log(PivotEditForm.instance);
 
-		Sprite sprite = Sprite.Create(texture, new Rect(0,0,texture.width,texture.height), new Vector2(0.5f,0f));
+		PivotEditForm.instance.LoadImage(Ultils.SetIsoPivot (texture));
+		PivotEditForm.instance.dialog.ShowDiaLog(true);
+	}
+
+	public void AddItem ()
+	{
+		GameObject item = new GameObject ("item");
+		Image imgItem = item.AddComponent<Image> ();
+		UnityEngine.UI.Button btnItem = item.AddComponent<UnityEngine.UI.Button> ();
+		Sprite sprite = Ultils.SetIsoPivot (texture);
 		imgItem.sprite = sprite;
-		item.transform.SetParent(currentButtonContainer.transform,false);
+		item.transform.SetParent (currentButtonContainer.transform, false);
 		item.transform.localScale = Vector3.one;
 		item.transform.localPosition = Vector3.zero;
-
-		IsoObjectFactory factory = item.AddComponent<IsoObjectFactory>();
+		IsoObjectFactory factory = item.AddComponent<IsoObjectFactory> ();
 		factory.FilePath = path;
-
-		btnItem.onClick.AddListener(() =>{
+		IsoLayerManager.currentLayer.isoFactories.Add (factory);
+		btnItem.onClick.AddListener (() =>  {
 			loadedImage = btnItem.image.sprite;
 			IsoObjectFactory.instance = factory;
-			IsoLayerManager.currentLayer.NewObject();
+			IsoLayerManager.currentLayer.NewObject ();
 		});
 	}
 }

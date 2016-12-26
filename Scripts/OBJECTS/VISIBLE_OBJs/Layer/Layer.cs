@@ -25,6 +25,8 @@ public class Layer : MonoBehaviour
 	public bool startBuild = false;
 	[HideInInspector]
 	public Hashtable positionData = new Hashtable ();
+	[HideInInspector]
+	public List<IsoObjectFactory> isoFactories = new List<IsoObjectFactory>();
 	#endregion 
 
 	#region PRIVATE FIELD
@@ -129,7 +131,6 @@ public class Layer : MonoBehaviour
 		IsoObject obj = null;
 		currentAction = MouseAction.cellhold;
 		if (currentObj == null) {
-//			currentObj = (GameObject)Instantiate (Resources.Load<GameObject> (ImportItemManager.currentPrefabs), this.transform);
 			currentObj = new GameObject ("obj");
 			currentObj.transform.SetParent(this.transform);
 

@@ -25,10 +25,8 @@ public class CameraTool : Tool
 		ToolName = NAME_CAMERA;
 		_defaultPos = Camera.main.transform.position;
 
-
 		ToolManager.tools.Add(this);
 		ToolManager.SetDefaultTool(this); // Set camera as default tool
-//		Debug.Log("Add " + ToolName + " Success!");
 	}
 	
 	// Update is called once per frame
