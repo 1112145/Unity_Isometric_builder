@@ -58,6 +58,7 @@ public class MoveTool : Tool {
 		IsInUse = false;
 		IsoLayerManager.currentLayer.SnapObject(moveObject);
 		IsoLayerManager.currentLayer.RemoveDataAtPosition(moveObject.transform.position);
+		IsoLayerManager.currentLayer.DestroyShadow();
 		ToolManager.DeselectTool();
 	}
 

@@ -102,11 +102,16 @@ public class Layer : MonoBehaviour
 
 		if (Input.GetMouseButtonDown (1)) {
 			Destroy (currentObj);
-			Destroy (shadow);
+			DestroyShadow();
 			ImportItemManager.loadedImage = null;
 			currentAction = MouseAction.none;
 			startBuild = false;
 		}
+	}
+
+	public void DestroyShadow()
+	{
+		Destroy (shadow);
 	}
 
 	void BuildLayer ()

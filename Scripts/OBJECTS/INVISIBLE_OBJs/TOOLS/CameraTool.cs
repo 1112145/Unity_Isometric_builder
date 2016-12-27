@@ -7,9 +7,13 @@ public class CameraTool : Tool
 	public static bool _isDragging = false;
 	public static CameraTool instance;
 
+	public const float MIN_SIZE = 0.25f;
+
+	public const float MAX_SIZE = 2;
+
 	#region private field
-	private int[] _cameraSizes = new int[]{ 25 ,20, 16, 12, 8, 4 };
-	private int _zoom = 2;
+	private int[] _cameraSizes = new int[]{ 36, 24, 12, 6, 3 };
+	private float _zoom = 0.25f;
 	private float _panSpeed = -16f;
 	private Vector3 _mouseOrigin;
 	private Vector3 _defaultPos;
@@ -18,10 +22,16 @@ public class CameraTool : Tool
 
 	void Awake() { instance = this;}
 
+	void SetOrthographicSize()
+	{
+		Camera.main.orthographicSize = (Screen.height /(_zoom * Constants.PIXEL_PER_UNIT))* 0.5f;
+	}
+
 	// Use this for initialization
 	void Start ()
 	{
-		Camera.main.orthographicSize = _cameraSizes [_zoom];
+//		Camera.main.orthographicSize = _cameraSizes [_zoom];
+		SetOrthographicSize();
 		ToolName = NAME_CAMERA;
 		_defaultPos = Camera.main.transform.position;
 
@@ -47,19 +57,21 @@ public class CameraTool : Tool
 	private void ZoomIn ()
 	{
 		_zoom++;
-		_zoom = Mathf.Clamp (_zoom, 0, 4);
-		Camera.main.orthographicSize = _cameraSizes [_zoom];
+		_zoom = Mathf.Clamp (_zoom, MIN_SIZE, MAX_SIZE);
+//		Camera.main.orthographicSize = _cameraSizes [_zoom];
+		SetOrthographicSize();
 	}
 	private void ZoomOut ()
 	{
 		_zoom--;
-		_zoom = Mathf.Clamp (_zoom, 0, 4);
-		Camera.main.orthographicSize = _cameraSizes [_zoom];
+		_zoom = Mathf.Clamp (_zoom, MIN_SIZE, MAX_SIZE);
+//		Camera.main.orthographicSize = _cameraSizes [_zoom];
+		SetOrthographicSize();
 	}
 	private void Drag ()
 	{
 		Vector3 pos = Camera.main.ScreenToViewportPoint (Input.mousePosition - _mouseOrigin);
-		Vector3 move = new Vector3 (pos.x * _panSpeed, pos.y * _panSpeed, 0);
+		Vector3 move = new Vector3 (Mathf.RoundToInt((pos.x * _panSpeed)),Mathf.RoundToInt(( pos.y * _panSpeed)), 0);
 		Camera.main.transform.Translate (move, Space.Self);
 		_mouseOrigin = Input.mousePosition;
 	}

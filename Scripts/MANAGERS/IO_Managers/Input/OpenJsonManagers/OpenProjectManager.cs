@@ -110,7 +110,6 @@ public class OpenProjectManager : MonoBehaviour
 		isoObj.FilePath = objModel.ImgFilePath;
 		layer.AddPositionData (obj.transform.position, obj);
 
-
 		// Read image;
 		StartCoroutine (LoadItemImage (objModel.ImgFilePath, (result) => {
 			renderer.sprite = result;
