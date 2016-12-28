@@ -65,7 +65,7 @@ public class ImportItemManager : MonoBehaviour {
 		// Show PNG Images.
 		Debug.Log(PivotEditForm.instance);
 
-		PivotEditForm.instance.LoadImage(Ultils.SetIsoPivot (texture));
+		PivotEditForm.instance.LoadImage(Ultils.ChangeOffset (texture));
 		PivotEditForm.instance.dialog.ShowDiaLog(true);
 	}
 
@@ -74,13 +74,15 @@ public class ImportItemManager : MonoBehaviour {
 		GameObject item = new GameObject ("item");
 		Image imgItem = item.AddComponent<Image> ();
 		UnityEngine.UI.Button btnItem = item.AddComponent<UnityEngine.UI.Button> ();
-		Sprite sprite = Ultils.SetIsoPivot (texture);
+		Sprite sprite = Ultils.ChangeOffset (texture);
 		imgItem.sprite = sprite;
 		item.transform.SetParent (currentButtonContainer.transform, false);
 		item.transform.localScale = Vector3.one;
 		item.transform.localPosition = Vector3.zero;
 		IsoObjectFactory factory = item.AddComponent<IsoObjectFactory> ();
 		factory.FilePath = path;
+		factory.offset = PivotEditForm.realSpriteOffset;
+
 		IsoLayerManager.currentLayer.isoFactories.Add (factory);
 		btnItem.onClick.AddListener (() =>  {
 			loadedImage = btnItem.image.sprite;

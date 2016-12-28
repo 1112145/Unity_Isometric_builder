@@ -8,16 +8,14 @@ public class CameraTool : Tool
 	public static CameraTool instance;
 
 	public const float MIN_SIZE = 0.25f;
-
 	public const float MAX_SIZE = 2;
+	public const float PANSPEED = -16f;
 
 	#region private field
-	private int[] _cameraSizes = new int[]{ 36, 24, 12, 6, 3 };
-	private float _zoom = 0.25f;
-	private float _panSpeed = -16f;
+	private float _zoom = MIN_SIZE;
+	private float _panSpeed = PANSPEED;
 	private Vector3 _mouseOrigin;
 	private Vector3 _defaultPos;
-	private int _defaultZoomLevel = 2;
 	#endregion
 
 	void Awake() { instance = this;}
@@ -30,7 +28,6 @@ public class CameraTool : Tool
 	// Use this for initialization
 	void Start ()
 	{
-//		Camera.main.orthographicSize = _cameraSizes [_zoom];
 		SetOrthographicSize();
 		ToolName = NAME_CAMERA;
 		_defaultPos = Camera.main.transform.position;
@@ -58,14 +55,12 @@ public class CameraTool : Tool
 	{
 		_zoom++;
 		_zoom = Mathf.Clamp (_zoom, MIN_SIZE, MAX_SIZE);
-//		Camera.main.orthographicSize = _cameraSizes [_zoom];
 		SetOrthographicSize();
 	}
 	private void ZoomOut ()
 	{
 		_zoom--;
 		_zoom = Mathf.Clamp (_zoom, MIN_SIZE, MAX_SIZE);
-//		Camera.main.orthographicSize = _cameraSizes [_zoom];
 		SetOrthographicSize();
 	}
 	private void Drag ()
@@ -78,7 +73,8 @@ public class CameraTool : Tool
 	private void Reset()
 	{
 		Camera.main.transform.position = _defaultPos;
-		Camera.main.orthographicSize = _cameraSizes [_defaultZoomLevel];
+		_zoom = MIN_SIZE;
+		SetOrthographicSize();
 	}
 	public void ActiveCameraTool(bool activeFlag)
 	{

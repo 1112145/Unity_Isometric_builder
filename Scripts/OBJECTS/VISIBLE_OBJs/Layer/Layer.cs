@@ -145,6 +145,7 @@ public class Layer : MonoBehaviour
 			currentObj.transform.position = new Vector3 (-1000f, -1000f, -1000f);
 			obj = currentObj.GetComponent<IsoObject> ();
 			obj.FilePath = IsoObjectFactory.instance.FilePath;
+			obj.offset = IsoObjectFactory.instance.offset;
 			obj.state = IsoObject.State.isHolding;
 			if(ImportItemManager.loadedImage != null)
 			{

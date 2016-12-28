@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class PivotEditForm : MonoBehaviour
 {
-
 	public GameObject pivotCursor;
 	public Image imgSprite;
 	public Image imgSpriteContent;
@@ -29,43 +28,51 @@ public class PivotEditForm : MonoBehaviour
 	void Awake ()
 	{
 		instance = this;
-		Debug.Log (" PivotEditForm Awake");
 	}
 
 	void Start ()
 	{
 		orgPos = pivotCursor.transform.localPosition;
+		// Test. TODO: Delete after finalize.
+		Sprite testSprite = Resources.Load<Sprite>("Images/floor2");
+		LoadImage(testSprite);
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		
 	}
 
 
 	public void OnClickApply ()
 	{
-		Debug.Log ("Apply!");
-
 		ImportItemManager.instance.AddItem ();
 		dialog.ShowDiaLog (false);
 	}
 
 	public void OnClickCancel ()
 	{
-		Debug.Log ("Cancel!");
 		dialog.ShowDiaLog (false);
 	}
 
-	public void SetTextPivotLocation ()
+	public void UpdatePivotLocation ()
 	{
-		Vector2 pivot = pivotCursor.transform.localPosition;
-		txtPivotLocation.text = "Offset: " + " ( " + pivot.x + "," + pivot.y + ")";
+		// How many pixels the pivot position far it's original position
+		Vector2 deltaPos = (Vector2)pivotCursor.transform.localPosition - orgPos; 
+		float ratio = imageRec.x / spriteRec.x;
+		float x = Mathf.Floor(deltaPos.x / ratio);
+		float y = Mathf.Floor(deltaPos.y / ratio);
+		SetTextLocation(x,y);
+		UpdateOffset ();
 	}
 
+	public void SetTextLocation(float x, float y)
+	{
+		dropdownXOffset.text = x.ToString();
+		dropdownYOffset.text = y.ToString();
+	}
 
-	public void LoadImage (Sprite sprite)
+	public Sprite LoadImage (Sprite sprite)
 	{
 		imgSpriteContent.sprite = sprite;
 		AspectRatioFitter ratio = imgSpriteContent.GetComponent<AspectRatioFitter> ();
@@ -73,6 +80,7 @@ public class PivotEditForm : MonoBehaviour
 		txtSize.text = "Size:   " + sprite.rect.width + ", " + sprite.rect.height;
 		spriteRec = new Vector2 (sprite.rect.width, sprite.rect.height);
 		imageRec = new Vector2 (512 * ratio.aspectRatio, 512);
+		return sprite;
 	}
 
 	public void OnEndEdit ()
@@ -82,7 +90,6 @@ public class PivotEditForm : MonoBehaviour
 
 	void UpdateOffset ()
 	{
-		//TODO: Nhan gia tri tu input field.
 		float xOffsetUI = (dropdownXOffset.text == "") ? 0 : float.Parse (dropdownXOffset.text);
 		float yOffsetUI = (dropdownYOffset.text == "") ? 0 : float.Parse (dropdownYOffset.text);
 
@@ -99,7 +106,6 @@ public class PivotEditForm : MonoBehaviour
 		float xReal = x / spriteRec.x;
 		float yReal = y / spriteRec.y;
 		realSpriteOffset = new Vector2 (0.5f + xReal, yReal);
-		Debug.Log (y + "," + spriteRec.y);
 		Debug.Log ("Offset: " + realSpriteOffset);
 
 	}

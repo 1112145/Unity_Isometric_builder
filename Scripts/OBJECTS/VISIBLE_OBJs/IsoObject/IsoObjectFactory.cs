@@ -4,6 +4,7 @@ using System.Collections;
 public class IsoObjectFactory : MonoBehaviour {
 
 	public string FilePath;
+	public Vector2 offset;
 	public static IsoObjectFactory instance;
 
 	void Awake()

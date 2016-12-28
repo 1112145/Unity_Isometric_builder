@@ -13,6 +13,7 @@ public class IsoObjectModel
 
 	public int SortingOrder;
 	public Vector3 position;
+	public Vector2 offset;
 	public Quaternion rotation;
 
 	// Convert from iso object to iso model.
@@ -23,8 +24,10 @@ public class IsoObjectModel
 
 		model.position = obj.gameObject.transform.position;
 		model.rotation = obj.gameObject.transform.rotation;
-		model.SortingOrder = obj.GetComponent<SpriteRenderer> ().sortingOrder;
+		SpriteRenderer objRenderer = obj.GetComponent<SpriteRenderer> ();
+		model.SortingOrder = objRenderer.sortingOrder;
 		model.ImgFilePath = obj.FilePath;
+		model.offset = obj.offset;
 		model.ImgFileName = Path.GetFileName (obj.FilePath);
 		model.ImgFolderPath = Path.GetDirectoryName (obj.FilePath);
 		return model;
@@ -70,12 +73,14 @@ public class IsoLayerModel
 public class IsoFactoryModel
 {
 	public string filePath;
+	public Vector2 offset;
 
 	public IsoFactoryModel(){}
 
 	public IsoFactoryModel(IsoObjectFactory factory)
 	{
 		this.filePath = factory.FilePath;
+		this.offset = factory.offset;
 	}
 }
 

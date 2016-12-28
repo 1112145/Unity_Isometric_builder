@@ -9,6 +9,7 @@ using System.IO;
 public class ExportFileManager : MonoBehaviour {
 
 	public static IsoMetricRootModel OutputRootModel = new IsoMetricRootModel();
+	public static string currentPath = "";
 	// Use this for initialization
 	void Start () {
 	
@@ -16,10 +17,24 @@ public class ExportFileManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if((Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
+			&& (Input.GetKeyDown(KeyCode.S)))
+		{
+			if(currentPath == "")
+			{
+				ExportToJSONDialog();
+			}
+			else
+			{
+				OutputRootModel.ConvertAllLayer();
+				string jsonContent = JsonUtility.ToJson(OutputRootModel);
+				File.WriteAllText(currentPath,jsonContent);
+			}
+		}
 	
 	}
 
-	public void ExportToJSON()
+	public void ExportToJSONDialog()
 	{
 		SaveFileDialog saveDialog = new SaveFileDialog();
 		saveDialog.Filter = "JSON Files |*.json";
@@ -27,6 +42,7 @@ public class ExportFileManager : MonoBehaviour {
 		{
 			OutputRootModel.ConvertAllLayer();
 			string jsonContent = JsonUtility.ToJson(OutputRootModel);
+			currentPath = saveDialog.FileName;
 			File.WriteAllText(saveDialog.FileName,jsonContent);
 			CameraTool._isDragging = false;
 		}

@@ -33,6 +33,7 @@ public class OpenProjectManager : MonoBehaviour
 		ofd.Filter = "JSON Files |*.json";
 		if (ofd.ShowDialog () == DialogResult.OK) {
 			InputRootModel = JsonUtility.FromJson<IsoMetricRootModel> (File.ReadAllText (ofd.FileName));
+			ExportFileManager.currentPath = ofd.FileName;
 			RenderRootModel ();
 			CameraTool._isDragging = false;
 		}
@@ -76,17 +77,21 @@ public class OpenProjectManager : MonoBehaviour
 	{
 		for (int i = 0; i < model.FactoryModel.Count; i++) {
 			string url = model.FactoryModel [i].filePath;
+			Vector2 offset = model.FactoryModel [i].offset;
+
 			StartCoroutine (LoadItemMenuImage (url, result => {
 				GameObject item = new GameObject ("item");
 				Image imgItem = item.AddComponent<Image> ();
 				UnityEngine.UI.Button btnItem = item.AddComponent<UnityEngine.UI.Button> ();
-				imgItem.sprite = result;
+				imgItem.sprite = Ultils.ChangeOffset(result,offset);
 				item.transform.SetParent (dialog.transform.GetChild (0).GetChild (0), false);
 				item.transform.localScale = Vector3.one;
 				item.transform.localPosition = Vector3.zero;
 				IsoObjectFactory factory = item.AddComponent<IsoObjectFactory> ();
 
 				factory.FilePath = url;
+				factory.offset = offset;
+
 				IsoLayerManager.currentLayer.isoFactories.Add (factory);
 				btnItem.onClick.AddListener (() => {
 					ImportItemManager.loadedImage = btnItem.image.sprite;
@@ -108,10 +113,12 @@ public class OpenProjectManager : MonoBehaviour
 		renderer.sortingOrder = objModel.SortingOrder;
 		IsoObject isoObj = obj.AddComponent<IsoObject> ();
 		isoObj.FilePath = objModel.ImgFilePath;
+		isoObj.offset = objModel.offset;
 		layer.AddPositionData (obj.transform.position, obj);
 
 		// Read image;
 		StartCoroutine (LoadItemImage (objModel.ImgFilePath, (result) => {
+			result = Ultils.ChangeOffset(result, isoObj.offset);
 			renderer.sprite = result;
 			obj.AddComponent<PolygonCollider2D> ();
 		}));
@@ -124,7 +131,7 @@ public class OpenProjectManager : MonoBehaviour
 		yield return www;
 		texture = www.texture;
 
-		Sprite sprite = Ultils.SetIsoPivot(texture);
+		Sprite sprite = Ultils.ChangeOffset(texture);
 		callback (sprite);
 	}
 
@@ -135,7 +142,7 @@ public class OpenProjectManager : MonoBehaviour
 			WWW www = new WWW ("file:///" + url);
 			yield return www;
 			texture = www.texture;
-			Sprite sprite = Ultils.SetIsoPivot(texture);
+			Sprite sprite = Ultils.ChangeOffset(texture);
 			loadedUrls.Add (url);
 			loadedSprites.Add (sprite);
 			callback (sprite);
