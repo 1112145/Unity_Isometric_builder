@@ -5,7 +5,6 @@ using System;
 using System.Windows.Forms;
 
 //http://answers.unity3d.com/questions/945172/sprite-with-higher-sorting-layer-not-firing-its-on.html
-//TODO: Đủ giây cho move object.
 public class IsoObject : MonoBehaviour {
 
 	public enum State
@@ -49,15 +48,10 @@ public class IsoObject : MonoBehaviour {
 
 			if(Input.GetKeyDown(KeyCode.R)) { Rotate();}
 
-			if(Input.GetKeyDown(KeyCode.M) || IsEnoughtSecond(1))	{ Move();}
+			if(Input.GetKeyDown(KeyCode.M))	{ Move();}
 		}
-			
 	}
 
-	bool IsEnoughtSecond(float second)
-	{
-		return false;
-	}
 
 	bool IsSelected ()
 	{

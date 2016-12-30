@@ -25,6 +25,7 @@ public class EraserTool : Tool
 	void Awake ()
 	{
 		instance = this;
+		Global.eraserTool = this;
 	}
 
 	// Use this for initialization

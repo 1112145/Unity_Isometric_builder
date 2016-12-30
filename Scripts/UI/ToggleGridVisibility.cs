@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+
 public class ToggleGridVisibility : MonoBehaviour {
 
 	public Grid gameGrid;

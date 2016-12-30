@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.EventSystems;
+// TODO: Delete a layer
 public class IsoLayerManager : MonoBehaviour
 {
 	#region CONSTANT
@@ -39,6 +40,7 @@ public class IsoLayerManager : MonoBehaviour
 	private void Awake ()
 	{
 		IsoLayerManager.instance = this;
+		Global.isoLayerManager = this;
 	}
 
 	private void Start ()
@@ -89,10 +91,8 @@ public class IsoLayerManager : MonoBehaviour
 		GameObject objButtonLayer = CreateNewButtonOnLayerMenu (layername);
 
 		// set event listener for toggle to show/ hide this layer.
-		Toggle tglLayerVisible = objButtonLayer.transform.FindChild (STR_TOGGLE).GetComponent<Toggle> ();
-		tglLayerVisible.onValueChanged.AddListener (delegate(bool on) {
-			layer.SetVisible (on);
-		});
+		Toggle tglLayerVisible = CreateToggle (objButtonLayer, layer);
+
 
 		// Create a dialog (layer menu) to contain item type of this layer.
 		GameObject menuItem = CreateLayerMenuItem ();
@@ -101,6 +101,14 @@ public class IsoLayerManager : MonoBehaviour
 		SetOnClickNewButton (layer, objButtonLayer, menuItem);
 	}
 
+	public static Toggle CreateToggle (GameObject objButtonLayer, Layer layer)
+	{
+		Toggle tglLayerVisible = objButtonLayer.transform.FindChild (STR_TOGGLE).GetComponent<Toggle> ();
+		tglLayerVisible.onValueChanged.AddListener (delegate(bool on) {
+			layer.SetVisible (on);
+		});
+		return tglLayerVisible;
+	}
 
 	public static GameObject CreateLayerMenuItem ()
 	{
@@ -148,9 +156,37 @@ public class IsoLayerManager : MonoBehaviour
 		component.onClick.AddListener (delegate {
 			ImportItemManager.currentButtonContainer = newDialog.transform.GetChild (0).GetChild (0).gameObject;
 		});
+
+		EventTrigger evTrigger = newButton.AddComponent<EventTrigger> ();
+		EventTrigger.Entry entry = new EventTrigger.Entry ();
+		entry.eventID = EventTriggerType.PointerClick;
+
+		entry.callback.AddListener (EventData =>  {
+			if (((PointerEventData)EventData).button == PointerEventData.InputButton.Right) {
+				LayerEditForm.instance.dialog.TurnOn(true);
+				LayerEditForm.instance.currentLayerId = script.layerID;
+			}
+		});
+		evTrigger.triggers.Add (entry);
 	}
 
 	#endregion
+
+	#region DELETE LAYER
+	public void DeleteLayer(int LayerID)
+	{
+		int index = layers.FindIndex(x => x.layerID == LayerID);
+		Destroy(dialogLayers[index]);
+		Destroy(buttonLayers[index]);
+		Destroy(layerObjects[index]);
+		Destroy(layers[index].gameObject);
+
+		dialogLayers.RemoveAt(index);
+		buttonLayers.RemoveAt(index);
+		layerObjects.RemoveAt(index);
+		layers.RemoveAt(index);
+		layernames.RemoveAt(index);
+	}
 
 	public void DeleteAll ()
 	{
@@ -164,6 +200,7 @@ public class IsoLayerManager : MonoBehaviour
 		layers.Clear();
 		IsoLayerManager.layernames.Clear ();
 	}
+	#endregion
 
 	#region FOCUS LAYER	
 	public void FocusCurrentLayer ()

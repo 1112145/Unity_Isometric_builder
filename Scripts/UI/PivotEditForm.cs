@@ -2,6 +2,10 @@
 using System.Collections;
 using UnityEngine.UI;
 
+// TODO: Sprite Bounds Pivot Edit Form
+using System;
+
+
 public class PivotEditForm : MonoBehaviour
 {
 	public GameObject pivotCursor;
@@ -15,7 +19,7 @@ public class PivotEditForm : MonoBehaviour
 
 	private float OffsetX;
 	private float OffsetY;
-	public static Vector2 realSpriteOffset = new Vector2(0.5f,0);
+	public static Vector2 realSpriteOffset = new Vector2 (0.5f, 0);
 
 	public static PivotEditForm instance;
 
@@ -28,14 +32,12 @@ public class PivotEditForm : MonoBehaviour
 	void Awake ()
 	{
 		instance = this;
+		orgPos = pivotCursor.transform.localPosition;
 	}
 
 	void Start ()
 	{
-		orgPos = pivotCursor.transform.localPosition;
-		// Test. TODO: Delete after finalize.
-		Sprite testSprite = Resources.Load<Sprite>("Images/floor2");
-		LoadImage(testSprite);
+		
 	}
 	
 	// Update is called once per frame
@@ -46,13 +48,13 @@ public class PivotEditForm : MonoBehaviour
 
 	public void OnClickApply ()
 	{
-		ImportItemManager.instance.AddItem ();
-		dialog.ShowDiaLog (false);
+		ImportItemManager.instance.AddItem (imgSpriteContent.sprite);
+		dialog.TurnOn (false);
 	}
 
 	public void OnClickCancel ()
 	{
-		dialog.ShowDiaLog (false);
+		dialog.TurnOn (false);
 	}
 
 	public void UpdatePivotLocation ()
@@ -60,60 +62,81 @@ public class PivotEditForm : MonoBehaviour
 		// How many pixels the pivot position far it's original position
 		Vector2 deltaPos = (Vector2)pivotCursor.transform.localPosition - orgPos; 
 		float ratio = imageRec.x / spriteRec.x;
-		float x = Mathf.Floor(deltaPos.x / ratio);
-		float y = Mathf.Floor(deltaPos.y / ratio);
-		SetTextLocation(x,y);
+		float x = Mathf.Floor (deltaPos.x / ratio);
+		float y = Mathf.Floor (deltaPos.y / ratio);
+		SetTextLocation (x, y);
 		UpdateOffset ();
 	}
 
-	public void SetTextLocation(float x, float y)
+	public void SetTextLocation (float x, float y)
 	{
-		dropdownXOffset.text = x.ToString();
-		dropdownYOffset.text = y.ToString();
+		dropdownXOffset.text = x.ToString ();
+		dropdownYOffset.text = y.ToString ();
 	}
 
-	public Sprite LoadImage (Sprite sprite)
+	public Sprite SetSprite (Sprite sprite)
 	{
 		imgSpriteContent.sprite = sprite;
+
 		AspectRatioFitter ratio = imgSpriteContent.GetComponent<AspectRatioFitter> ();
 		ratio.aspectRatio = sprite.rect.width / sprite.rect.height;
+
 		txtSize.text = "Size:   " + sprite.rect.width + ", " + sprite.rect.height;
 		spriteRec = new Vector2 (sprite.rect.width, sprite.rect.height);
 		imageRec = new Vector2 (512 * ratio.aspectRatio, 512);
 		return sprite;
 	}
 
+
+
 	public void OnEndEdit ()
+	{
+		UpdateOffset ();
+	}
+
+	public void OnValueChanged ()
 	{
 		UpdateOffset ();
 	}
 
 	void UpdateOffset ()
 	{
-		float xOffsetUI = (dropdownXOffset.text == "") ? 0 : float.Parse (dropdownXOffset.text);
-		float yOffsetUI = (dropdownYOffset.text == "") ? 0 : float.Parse (dropdownYOffset.text);
+		float xOffsetUI = 0;
+		float yOffsetUI = 0;
 
-		float realXOffset = xOffsetUI * imageRec.x / spriteRec.x;
-		float realYOffset = yOffsetUI * imageRec.y / spriteRec.y;
+		float.TryParse (dropdownXOffset.text,out xOffsetUI);
+		float.TryParse (dropdownYOffset.text,out yOffsetUI);
 
-		pivotCursor.transform.localPosition = orgPos + new Vector2 (realXOffset, realYOffset);
+		if(float.IsNaN(xOffsetUI)) xOffsetUI = 0;
+		if(float.IsNaN(yOffsetUI)) yOffsetUI = 0;
+
+		float realXOffsetWorld = xOffsetUI * imageRec.x / spriteRec.x;
+		float realYOffsetWorld = yOffsetUI * imageRec.y / spriteRec.y;
+
+		pivotCursor.transform.localPosition = orgPos + new Vector2 (realXOffsetWorld, realYOffsetWorld);
 		ConvertToRealSpriteOffset (xOffsetUI, yOffsetUI);
 	}
 
 	public void ConvertToRealSpriteOffset (float x, float y)
 	{
 		// Caculate the real offset
-		float xReal = x / spriteRec.x;
-		float yReal = y / spriteRec.y;
-		realSpriteOffset = new Vector2 (0.5f + xReal, yReal);
-		Debug.Log ("Offset: " + realSpriteOffset);
-
+		float xRealWorld = x / spriteRec.x;
+		float yRealWorld = y / spriteRec.y;
+		realSpriteOffset = new Vector2 (0.5f + xRealWorld, yRealWorld);
 	}
 
-	// Reset Form
-	public void ResetForm ()
+
+	public Vector2 RealOffsetToUI (Vector2 realSpriteOffset)
 	{
-		
+		float xReal = realSpriteOffset.x - 0.5f;
+		float yReal = realSpriteOffset.y;
+		return new Vector2 (spriteRec.x * xReal, spriteRec.y * yReal);
+	}
+
+	public void RenderUIFromOffset (Vector2 offset)
+	{
+		dropdownXOffset.text = Mathf.Round (offset.x).ToString ();
+		dropdownYOffset.text = Mathf.Round (offset.y).ToString ();
 	}
 
 }

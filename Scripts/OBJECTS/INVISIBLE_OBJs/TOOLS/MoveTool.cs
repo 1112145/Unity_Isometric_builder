@@ -14,6 +14,7 @@ public class MoveTool : Tool {
 	void Awake()
 	{
 		instance = this;
+		Global.moveTool = this;
 	}
 
 	// Use this for initialization

@@ -17,20 +17,31 @@ public class Dialog : MonoBehaviour {
 	
 	}
 
-
-
-	public void ShowDiaLog(bool show)
+	public void TurnOn(bool On)
 	{
-		if(show)
+		if(On)
 		{
 			foreground.SetActive(true);
-			DialogController.instance.HideAllDialogExclude(this.gameObject);
 			UITransition.PopIn(contentView.transform);
 		}
 		else
 		{
 			foreground.SetActive(false);
 			contentView.SetActive(false);
+		}
+	}
+
+	public void ShowDiaLog(bool show)
+	{
+		if(show)
+		{
+			TurnOn(true);
+			DialogController.instance.HideAllDialogExclude(this.gameObject);
+
+		}
+		else
+		{
+			TurnOn(false);
 		}
 	}
 }

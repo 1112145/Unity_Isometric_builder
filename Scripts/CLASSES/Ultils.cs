@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Ultils{
 
@@ -23,4 +24,16 @@ public class Ultils{
 		Sprite sprite = Sprite.Create (spriteImage.texture, rect, offset);
 		return sprite;
 	}
+
+	public static IEnumerator LoadItemMenuImage (string url, Action<Sprite> callback)
+	{
+		Texture2D texture = null;
+		WWW www = new WWW ("file:///" + url);
+		yield return www;
+		texture = www.texture;
+
+		Sprite sprite = Ultils.ChangeOffset(texture);
+		callback (sprite);
+	}
+		
 }

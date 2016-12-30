@@ -5,6 +5,7 @@ using System.IO;
 
 
 // To export my level to JSON Files.
+using System;
 
 public class ExportFileManager : MonoBehaviour {
 
@@ -17,20 +18,7 @@ public class ExportFileManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if((Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
-			&& (Input.GetKeyDown(KeyCode.S)))
-		{
-			if(currentPath == "")
-			{
-				ExportToJSONDialog();
-			}
-			else
-			{
-				OutputRootModel.ConvertAllLayer();
-				string jsonContent = JsonUtility.ToJson(OutputRootModel);
-				File.WriteAllText(currentPath,jsonContent);
-			}
-		}
+		
 	
 	}
 
@@ -40,11 +28,19 @@ public class ExportFileManager : MonoBehaviour {
 		saveDialog.Filter = "JSON Files |*.json";
 		if(saveDialog.ShowDialog() == DialogResult.OK)
 		{
-			OutputRootModel.ConvertAllLayer();
-			string jsonContent = JsonUtility.ToJson(OutputRootModel);
-			currentPath = saveDialog.FileName;
-			File.WriteAllText(saveDialog.FileName,jsonContent);
-			CameraTool._isDragging = false;
+			try{
+				OutputRootModel.ConvertAllLayer();
+				string jsonContent = JsonUtility.ToJson(OutputRootModel);
+				currentPath = saveDialog.FileName;
+				File.WriteAllText(saveDialog.FileName,jsonContent);
+				CameraTool._isDragging = false;
+				// Reset RootModel.
+				OutputRootModel = new IsoMetricRootModel();
+			}
+			catch(Exception e)
+			{
+				MessageBox.Show(e.Message);
+			}
 		}
 	}
 }

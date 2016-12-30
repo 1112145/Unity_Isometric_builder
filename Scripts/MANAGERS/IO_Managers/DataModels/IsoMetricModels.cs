@@ -30,6 +30,7 @@ public class IsoObjectModel
 		model.offset = obj.offset;
 		model.ImgFileName = Path.GetFileName (obj.FilePath);
 		model.ImgFolderPath = Path.GetDirectoryName (obj.FilePath);
+
 		return model;
 	}
 }
@@ -53,6 +54,7 @@ public class IsoLayerModel
 		for (int i = 0; i < layer.isoFactories.Count; i++) {
 			model.FactoryModel.Add(new IsoFactoryModel(layer.isoFactories[i]));
 		}
+
 		for (int i = 0; i < layer.transform.childCount; i++) {
 			IsoObject obj = layer.transform.GetChild (i).GetComponent<IsoObject> ();
 			if(obj != null){

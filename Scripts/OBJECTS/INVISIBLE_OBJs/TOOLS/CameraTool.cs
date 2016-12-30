@@ -9,40 +9,44 @@ public class CameraTool : Tool
 
 	public const float MIN_SIZE = 0.25f;
 	public const float MAX_SIZE = 2;
-	public const float PANSPEED = -16f;
+	public const float PANSPEED = -20f;
 
 	#region private field
 	private float _zoom = MIN_SIZE;
 	private float _panSpeed = PANSPEED;
 	private Vector3 _mouseOrigin;
 	private Vector3 _defaultPos;
+
 	#endregion
 
-	void Awake() { instance = this;}
-
-	void SetOrthographicSize()
+	void Awake ()
 	{
-		Camera.main.orthographicSize = (Screen.height /(_zoom * Constants.PIXEL_PER_UNIT))* 0.5f;
+		instance = this;
+		Global.cameraTool = this;
+	}
+
+	void SetOrthographicSize ()
+	{
+		Camera.main.orthographicSize = (Screen.height / (_zoom * Constants.PIXEL_PER_UNIT)) * 0.5f;
 	}
 
 	// Use this for initialization
 	void Start ()
 	{
-		SetOrthographicSize();
+		SetOrthographicSize ();
 		ToolName = NAME_CAMERA;
 		_defaultPos = Camera.main.transform.position;
 
-		ToolManager.tools.Add(this);
-		ToolManager.SetDefaultTool(this); // Set camera as default tool
+		ToolManager.tools.Add (this);
+		ToolManager.SetDefaultTool (this); // Set camera as default tool
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 		OnMouseWheel ();
-		OnReset();
-		if(!active) 
-		{
+		OnReset ();
+		if (!active) {
 			_isDragging = false;
 			return;
 		}
@@ -51,38 +55,45 @@ public class CameraTool : Tool
 
 
 	#region CAMERA FUNCTIONS
+
 	private void ZoomIn ()
 	{
 		_zoom++;
 		_zoom = Mathf.Clamp (_zoom, MIN_SIZE, MAX_SIZE);
-		SetOrthographicSize();
+		SetOrthographicSize ();
 	}
+
 	private void ZoomOut ()
 	{
 		_zoom--;
 		_zoom = Mathf.Clamp (_zoom, MIN_SIZE, MAX_SIZE);
-		SetOrthographicSize();
+		SetOrthographicSize ();
 	}
+
 	private void Drag ()
 	{
 		Vector3 pos = Camera.main.ScreenToViewportPoint (Input.mousePosition - _mouseOrigin);
-		Vector3 move = new Vector3 (Mathf.RoundToInt((pos.x * _panSpeed)),Mathf.RoundToInt(( pos.y * _panSpeed)), 0);
+		Vector3 move = new Vector3 ((pos.x * _panSpeed), (pos.y * _panSpeed), 0);
 		Camera.main.transform.Translate (move, Space.Self);
 		_mouseOrigin = Input.mousePosition;
 	}
-	private void Reset()
+
+	private void Reset ()
 	{
 		Camera.main.transform.position = _defaultPos;
 		_zoom = MIN_SIZE;
-		SetOrthographicSize();
+		SetOrthographicSize ();
 	}
-	public void ActiveCameraTool(bool activeFlag)
+
+	public void ActiveCameraTool (bool activeFlag)
 	{
 		active = activeFlag;
 	}
+
 	#endregion
 
 	#region EVENT HANDLER FUNCTIONS
+
 	public void OnMouseWheel ()
 	{
 		if (Input.GetAxis ("Mouse ScrollWheel") > 0f) {// forward
@@ -109,13 +120,22 @@ public class CameraTool : Tool
 		}
 	}
 
-	public void OnZoomIn() { ZoomIn();}
-
-	public void OnZoomOut() { ZoomOut();}
-
-	public void OnReset()
+	public void OnZoomIn ()
 	{
-		if(Input.GetKeyDown(KeyCode.Space)) { Reset();}
+		ZoomIn ();
 	}
+
+	public void OnZoomOut ()
+	{
+		ZoomOut ();
+	}
+
+	public void OnReset ()
+	{
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			Reset ();
+		}
+	}
+
 	#endregion
 }

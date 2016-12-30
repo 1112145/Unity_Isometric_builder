@@ -13,7 +13,6 @@ public class Grid : MonoBehaviour {
 	[HideInInspector]
 	public List<GameObject> Tiles = new List<GameObject>();
 
-	[HideInInspector]
 	public static Grid instance;
 
 	[HideInInspector]
