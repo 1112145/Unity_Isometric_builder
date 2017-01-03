@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-// TODO: Delete a layer
+
 public class IsoLayerManager : MonoBehaviour
 {
 	#region CONSTANT
@@ -201,6 +201,8 @@ public class IsoLayerManager : MonoBehaviour
 		IsoLayerManager.layernames.Clear ();
 	}
 	#endregion
+
+	// TODO: Rename Layer feature
 
 	#region FOCUS LAYER	
 	public void FocusCurrentLayer ()

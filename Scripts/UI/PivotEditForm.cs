@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-
-// TODO: Sprite Bounds Pivot Edit Form
 using System;
 
 
@@ -37,7 +35,9 @@ public class PivotEditForm : MonoBehaviour
 
 	void Start ()
 	{
-		
+		// Test 
+		Sprite sprite = Resources.Load<Sprite>("Images/layer");
+		SetSprite(sprite);
 	}
 	
 	// Update is called once per frame
@@ -80,6 +80,10 @@ public class PivotEditForm : MonoBehaviour
 
 		AspectRatioFitter ratio = imgSpriteContent.GetComponent<AspectRatioFitter> ();
 		ratio.aspectRatio = sprite.rect.width / sprite.rect.height;
+
+		AspectRatioFitter containerRatioFitter = imgSprite.gameObject.AddComponent<AspectRatioFitter>();
+		containerRatioFitter.aspectMode = AspectRatioFitter.AspectMode.HeightControlsWidth;
+		containerRatioFitter.aspectRatio = ratio.aspectRatio;
 
 		txtSize.text = "Size:   " + sprite.rect.width + ", " + sprite.rect.height;
 		spriteRec = new Vector2 (sprite.rect.width, sprite.rect.height);

@@ -6,13 +6,20 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 
-
+//TODO: Xử lý trường hợp đọc JSON được nhưng không đọc được image do image change path.
 public class OpenProjectManager : MonoBehaviour
 {
+	#region Public Field
 	public GameObject loading;
 	public static IsoMetricRootModel InputRootModel;
 	public static List<DownloadedResource> resources = new List<DownloadedResource> ();
+	#endregion
+
+	#region Private Field
 	private List<string> urls = new List<string> ();
+	private string errorText = "";
+	#endregion
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -57,10 +64,14 @@ public class OpenProjectManager : MonoBehaviour
 
 	public IEnumerator LoadItemMenuImg (string url, Action<DownloadedResource> callback)
 	{
+		
 		Texture2D texture = null;
 		WWW www = new WWW ("file:///" + url);
 		yield return www;
 		texture = www.texture;
+		if (www.error != null) {
+			errorText += "File not found: " + url + "\r\n";
+		}
 		Sprite sprite = Ultils.ChangeOffset (texture);
 		DownloadedResource rs = new DownloadedResource (url, sprite);
 		callback (rs);
@@ -82,7 +93,12 @@ public class OpenProjectManager : MonoBehaviour
 			loading.SetActive (true);
 			StartCoroutine (LoadAllResources ((done) => {
 				if (done) {
-					RenderRootModel ();
+					if (errorText != "") {
+						MessageBox.Show (errorText, "Error Read Resource!");
+					} else {
+						RenderRootModel ();
+					}
+
 					loading.SetActive (false);
 				}
 			}));
