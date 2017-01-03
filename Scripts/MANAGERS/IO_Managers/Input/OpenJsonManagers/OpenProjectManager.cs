@@ -50,6 +50,7 @@ public class OpenProjectManager : MonoBehaviour
 	{
 		yield return null;
 		int nDone = 0;
+		if(urls.Count == 0) callback(true);
 		for (int i = 0; i < urls.Count; i++) {
 			string url = urls [i];
 			StartCoroutine (LoadItemMenuImg (url, (result) => {
@@ -97,10 +98,10 @@ public class OpenProjectManager : MonoBehaviour
 						MessageBox.Show (errorText, "Error Read Resource!");
 					} else {
 						RenderRootModel ();
+						loading.SetActive (false);
 					}
-
-					loading.SetActive (false);
 				}
+
 			}));
 
 			CameraTool._isDragging = false;

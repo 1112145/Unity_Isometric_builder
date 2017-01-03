@@ -203,6 +203,16 @@ public class IsoLayerManager : MonoBehaviour
 	#endregion
 
 	// TODO: Rename Layer feature
+	public void RenameLayer(int LayerID, string NewName)
+	{
+		int index = layers.FindIndex(x => x.layerID == LayerID);
+		layernames[index] = NewName;
+		layerObjects[index].name = NewName;
+		Text txtLayerName = buttonLayers[index].transform.GetChild(0).GetComponent<Text>();
+		txtLayerName.text = NewName;
+	}
+
+
 
 	#region FOCUS LAYER	
 	public void FocusCurrentLayer ()

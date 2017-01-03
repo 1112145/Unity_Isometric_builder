@@ -35,9 +35,6 @@ public class PivotEditForm : MonoBehaviour
 
 	void Start ()
 	{
-		// Test 
-		Sprite sprite = Resources.Load<Sprite>("Images/layer");
-		SetSprite(sprite);
 	}
 	
 	// Update is called once per frame

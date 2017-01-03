@@ -33,6 +33,8 @@ public class LayerEditForm : MonoBehaviour {
 
 	public void OnClickRename()
 	{
+		RenameLayerForm.instance.currentLayerId = currentLayerId;
+		RenameLayerForm.instance.dialog.TurnOn(true); 
 		dialog.TurnOn(false);
 	}
 }
