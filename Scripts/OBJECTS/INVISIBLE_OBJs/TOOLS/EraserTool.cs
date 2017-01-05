@@ -106,11 +106,12 @@ public class EraserTool : Tool
 	void DetectSelect ()
 	{
 		if (!IsInUse) {
-			if (Input.GetKeyDown (KeyCode.E)) {
+			// Detect Select this tool event.
+			if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.E))
+			{
 				OnSelect ();
 			} else
 				return;
-			// Detect Select this tool event.
 		}
 	}
 }

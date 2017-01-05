@@ -18,7 +18,18 @@ public class ExportFileManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		if(currentPath != null)
+		{
+			if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
+			{
+				Debug.Log("Ctrl + S");
+				OutputRootModel = new IsoMetricRootModel();
+				OutputRootModel.ConvertAllLayer();
+				string jsonContent = JsonUtility.ToJson(OutputRootModel);
+				File.WriteAllText(currentPath,jsonContent);
+			}
+		}
 	
 	}
 

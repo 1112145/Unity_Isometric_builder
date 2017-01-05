@@ -25,6 +25,8 @@ public class IsoLayerManager : MonoBehaviour
 
 	public GameObject buttonLayerContainer;
 	public GameObject groupDialog;
+	public GameObject rootLayer;
+
 	public static IsoLayerManager instance;
 	public static Layer currentLayer;
 	public static List<string> layernames = new List<string> ();
@@ -99,6 +101,8 @@ public class IsoLayerManager : MonoBehaviour
 
 
 		SetOnClickNewButton (layer, objButtonLayer, menuItem);
+
+
 	}
 
 	public static Toggle CreateToggle (GameObject objButtonLayer, Layer layer)
@@ -126,6 +130,7 @@ public class IsoLayerManager : MonoBehaviour
 	public static Layer CreateLayer (string layername, int layerId)
 	{
 		GameObject gameObject = new GameObject (layername);
+		gameObject.transform.SetParent(IsoLayerManager.instance.rootLayer.transform);
 		Layer layer = gameObject.AddComponent<Layer> ();
 		layer.layerID = layerId;
 		instance.layers.Add (layer);
@@ -202,7 +207,7 @@ public class IsoLayerManager : MonoBehaviour
 	}
 	#endregion
 
-	// TODO: Rename Layer feature
+	#region RENAME LAYER
 	public void RenameLayer(int LayerID, string NewName)
 	{
 		int index = layers.FindIndex(x => x.layerID == LayerID);
@@ -211,8 +216,7 @@ public class IsoLayerManager : MonoBehaviour
 		Text txtLayerName = buttonLayers[index].transform.GetChild(0).GetComponent<Text>();
 		txtLayerName.text = NewName;
 	}
-
-
+	#endregion
 
 	#region FOCUS LAYER	
 	public void FocusCurrentLayer ()
