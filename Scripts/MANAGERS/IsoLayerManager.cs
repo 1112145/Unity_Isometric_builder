@@ -125,7 +125,7 @@ public class IsoLayerManager : MonoBehaviour
 		GameObject gameObject = (GameObject)Instantiate (Resources.Load<GameObject> (PATH_PREFAB_DIALOG), instance.groupDialog.transform);
 		gameObject.transform.localScale = Vector3.one;
 		gameObject.transform.localPosition = Vector3.zero;
-		Button component = gameObject.transform.GetChild (0).FindChild (STR_ADDTILE_BUTTON).GetComponent<Button> ();
+		Button component = gameObject.transform.GetChild (0).GetChild (0).FindChild (STR_ADDTILE_BUTTON).GetComponent<Button> ();
 		component.onClick.AddListener (delegate {
 			ImportItemManager.instance.ImportNewItem ();
 		});
@@ -159,7 +159,9 @@ public class IsoLayerManager : MonoBehaviour
 	{
 		Button component = newButton.GetComponent<Button> ();
 		component.onClick.AddListener (delegate {
-			newDialog.GetComponent<Dialog> ().ShowDiaLog (true);
+			Dialog dialogComponent = newDialog.GetComponent<Dialog> ();
+			dialogComponent.ShowDiaLog (true);
+			dialogComponent.contentView.transform.FindChild("VerticalDropdown").GetComponent<VerticalDropDown>().Reset();
 		});
 		component.onClick.AddListener (delegate {
 			IsoLayerManager.instance.SelectLayer (script.layerID);

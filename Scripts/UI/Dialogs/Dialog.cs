@@ -22,7 +22,8 @@ public class Dialog : MonoBehaviour {
 		if(On)
 		{
 			foreground.SetActive(true);
-			UITransition.PopIn(contentView.transform);
+			contentView.transform.gameObject.SetActive(true);
+//			UITransition.PopIn(contentView.transform);
 		}
 		else
 		{

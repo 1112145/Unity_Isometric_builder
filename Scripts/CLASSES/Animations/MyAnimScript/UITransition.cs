@@ -280,5 +280,36 @@ public class UITransition: MonoBehaviour {
 	}
 
 
+	public static void MoveLeft(Transform target, float deltaX)
+	{
+		Tween.Begin(target);
+		Tween.Easing = Ease.QuadraticIn;
+		Tween.Move(target.localPosition + new Vector3(deltaX,0,0),Space.Self);
+		Tween.Run();
+	}
+
+	public static void MoveRight(Transform target, float deltaX)
+	{
+		Tween.Begin(target);
+		Tween.Easing = Ease.QuadraticIn;
+		Tween.Move(target.localPosition - new Vector3(deltaX,0,0),Space.Self);
+		Tween.Run();
+	}
+
+	public static void MoveUp(Transform target, float deltaY)
+	{
+		Tween.Begin(target);
+		Tween.Easing = Ease.QuadraticIn;
+		Tween.Move(target.localPosition + new Vector3(0,deltaY,0),Space.Self);
+		Tween.Run();
+	}
+
+	public static void MoveDown(Transform target, float deltaY)
+	{
+		Tween.Begin(target);
+		Tween.Easing = Ease.QuadraticIn;
+		Tween.Move(target.localPosition - new Vector3(0,deltaY,0),Space.Self);
+		Tween.Run();
+	}
 
 }
