@@ -18,10 +18,9 @@ public class ExportFileManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-		if(currentPath != null)
+		if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
 		{
-			if(Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.S))
+			if(currentPath != null)
 			{
 				Debug.Log("Ctrl + S");
 				OutputRootModel = new IsoMetricRootModel();
@@ -29,8 +28,12 @@ public class ExportFileManager : MonoBehaviour {
 				string jsonContent = JsonUtility.ToJson(OutputRootModel);
 				File.WriteAllText(currentPath,jsonContent);
 			}
+			else
+			{
+				ExportToJSONDialog();
+			}
 		}
-	
+
 	}
 
 	public void ExportToJSONDialog()

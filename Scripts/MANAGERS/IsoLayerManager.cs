@@ -60,12 +60,18 @@ public class IsoLayerManager : MonoBehaviour
 	#endregion
 
 	#region SELECT LAYER
-	public void SelectLayer (int layerIndex)
+	public void SelectLayer(Layer layer)
 	{
-		this.CurrentLayerIndex = layerIndex;
+		this.CurrentLayerIndex = layers.FindIndex(x => (x == layer));
+		this.SetCurrentLayerName();
+		IsoLayerManager.currentLayer = layer;
+	}
+
+	public void SelectLayer (int layerId)
+	{
+		this.CurrentLayerIndex = layers.FindIndex(x => (x.layerID == layerId));
 		this.SetCurrentLayerName ();
-		IsoLayerManager.currentLayer = this.layers [layerIndex];
-		IsoLayerManager.instance = this;
+		IsoLayerManager.currentLayer = this.layers [CurrentLayerIndex];
 	}
 
 	private void SetCurrentLayerName ()

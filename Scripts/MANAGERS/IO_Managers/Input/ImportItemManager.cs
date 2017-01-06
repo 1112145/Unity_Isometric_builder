@@ -38,7 +38,10 @@ public class ImportItemManager : MonoBehaviour {
 			CameraTool._isDragging = false;
 			// Read PNG Files.
 			path = opd.FileName;
-			StartCoroutine(LoadImage("file:///" + path));
+			StartCoroutine(Ultils.LoadItemMenuImage(path,(result) => {
+				PivotEditForm.instance.SetSprite(result);
+				PivotEditForm.instance.dialog.TurnOn(true);
+			}));
 
 		}
 		else {
@@ -46,21 +49,6 @@ public class ImportItemManager : MonoBehaviour {
 		}
 
 	}
-	#endregion
-
-	#region PRIVATE FUNCTION
-
-	IEnumerator LoadImage(string url)
-	{
-		texture = new Texture2D(4, 4, TextureFormat.DXT1, false);
-		WWW www = new WWW(url);
-		yield return www;
-		www.LoadImageIntoTexture(texture);
-		// Show PNG Images.
-		PivotEditForm.instance.SetSprite(Ultils.ChangeOffset (texture));
-		PivotEditForm.instance.dialog.ShowDiaLog(true);
-	}
-
 	#endregion
 
 	#region STATIC FUNCTION
@@ -82,7 +70,6 @@ public class ImportItemManager : MonoBehaviour {
 
 	public void AddItem ()
 	{
-		
 		GameObject item = new GameObject ("item");
 		Image imgItem = item.AddComponent<Image> ();
 
@@ -116,11 +103,9 @@ public class ImportItemManager : MonoBehaviour {
 		if(MenuItemEditor.instance.currentItem != null){
 			//Copy file path
 			path = MenuItemEditor.instance.currentItem.GetComponent<IsoObjectFactory>().FilePath;
-
 			MenuItemEditor.instance.RemoveCurrentItem();
 		}
 		texture = sprite.texture;
 		AddItem();
-		Debug.Log(path);
 	}
 }

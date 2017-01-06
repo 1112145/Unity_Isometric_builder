@@ -27,7 +27,7 @@ public class CameraTool : Tool
 
 	void SetOrthographicSize ()
 	{
-		Camera.main.orthographicSize = (Screen.height / (_zoom * Constants.PIXEL_PER_UNIT)) * 0.5f;
+		Camera.main.orthographicSize = (768 / (_zoom * Constants.PIXEL_PER_UNIT)) * 0.5f;
 	}
 
 	// Use this for initialization
